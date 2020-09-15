@@ -8,11 +8,12 @@
 </script>
 
 <script>
-	import auth from './_auth';
+	import { onMount } from 'svelte';
+	import { writable, readable, derived } from 'svelte-persistent-store/dist/session';
 
-	let loggedIn;
-
-	$: loggedIn = auth;
+	onMount(() => {
+		console.log('the component has mounted');
+	});
 </script>
 
 <svelte:head>
