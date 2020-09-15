@@ -1,5 +1,10 @@
 <script context="module">
+	export async function preload() {
+		const res = await this.fetch(`auth.json`);
+		const loggedIn = await res.json();
 
+		return { loggedIn };
+	}
 </script>
 
 <script>
@@ -22,7 +27,9 @@
 </figure>
 
 <p>Logged in?</p>
-{loggedIn}
+{#await loggedIn then value}
+	{value.sessionId}
+{/await}
 
 <style>
 	h1, figure, p {
