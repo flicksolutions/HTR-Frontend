@@ -1,15 +1,15 @@
 <script context="module">
-	export async function preload() {
+	/*export async function preload() {
 		const res = await this.fetch(`auth.json`);
 		const loggedIn = await res.json();
 
 		return { loggedIn };
-	}
+	}*/
 </script>
 
 <script>
 	import { onMount } from 'svelte';
-	import { writable, readable, derived } from 'svelte-persistent-store/dist/session';
+	import { sessionId } from './_store';
 
 	onMount(() => {
 		console.log('the component has mounted');
@@ -28,9 +28,8 @@
 </figure>
 
 <p>Logged in?</p>
-{#await loggedIn then value}
-	{value.sessionId}
-{/await}
+<button on:click={console.log($sessionId)}>session</button>
+{$sessionId}
 
 <style>
 	h1, figure, p {
