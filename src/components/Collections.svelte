@@ -6,6 +6,8 @@
     let selectedCol;
     let selectedDoc;
     let docs;
+    let statusLA;
+    let fullDoc;
 
     onMount(async () => {
         let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+$sessionId, {
@@ -33,11 +35,54 @@
         method: 'GET',
         });
         const data = await res.json();
-        //console.log(data);
+        console.log(data);
+        return data;
+    }
+
+    const fetchFull = async (id) => {
+        console.log("run fetchFull");
+        const res = await fetch(`https://transkribus.eu/TrpServer/rest/collections/${selectedCol.colId}/${id}/fulldoc?JSESSIONID=${$sessionId}`, {
+            method: 'GET',
+        });
+        const data = await res.json();
+        console.log(data);
         return data;
     }
 
     $: if (selectedCol) {fetchDocs(selectedCol.colId).then(res => docs = res);}
+    $: if (selectedDoc) {fetchFull(selectedDoc.docId).then(res => fullDoc = res);}
+
+    const startLA = async (id) => {
+        let pagelist;
+        fullDoc.pageList.pages.forEach(page => pagelist += "<pages><pageId>"+page.pageId+"</pageId></pages>");
+        console.log(pagelist);
+        const res = await fetch(`https://transkribus.eu/TrpServer/rest/LA?collId=${selectedCol.colId}&doBlockSeg=true&doLineSeg=true&doWordSeg=false&jobImpl=CITlabAdvancedLaJob&doCreateJobBatch=false&JSESSIONID=${$sessionId}`, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/xml',
+            },
+            /*body: {
+                    docList: {
+                        docs: [ {
+                            docId: id,
+                            pageList: {
+                                pages: [ {
+                                    pageId: 19719563,
+                                }]
+                            }
+                        } ]
+                }
+            }*/
+            body: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><jobParameters><docList><docs><docId>${id}</docId><pageList>${pagelist}</pageList></docs></docList><params/></jobParameters>`
+        });
+        const data = await res.text();
+        console.log(data);
+        if (res.status === 200) {
+            return true;
+        } else {
+            return res.status;
+        }
+    };
 </script>
 
 {#await collections then colls}
@@ -55,4 +100,8 @@
             <option value={doc}>{doc.title}</option>
         {/each}
     </select>
+{/if}
+{#if selectedDoc}
+    <button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</button>
+    Status: {statusLA}
 {/if}
