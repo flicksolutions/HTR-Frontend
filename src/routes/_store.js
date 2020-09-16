@@ -1,4 +1,4 @@
-import { readable } from 'svelte-persistent-store/dist/session';
+import {readable, writable} from 'svelte-persistent-store/dist/session';
 //const fetch = require('node-fetch');
 
 const createSessionId = (set) => {
@@ -6,4 +6,4 @@ const createSessionId = (set) => {
     return () => {console.log("stop")}
 };
 
-export const sessionId = readable('sessionId', '', createSessionId);
+export const sessionId = writable('sessionId', 0);

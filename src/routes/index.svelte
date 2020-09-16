@@ -10,57 +10,33 @@
 <script>
 	import { onMount } from 'svelte';
 	import { sessionId } from './_store';
+	import Login from '../components/Login.svelte';
+	import Collections from '../components/Collections.svelte';
+	import HTR from '../components/HTR.svelte';
 
 	onMount(() => {
-		console.log('the component has mounted');
+		console.log('running onmount')
+		if (!$sessionId) {
+			console.log('sessionID is not truthy!')
+			fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
+		}
 	});
 </script>
 
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>HTR Frontend</title>
 </svelte:head>
 
-<h1>Great success!</h1>
+<h1>HTR-Frontend</h1>
+{#if !$sessionId}
+	<Login />
+{:else}
+	<Collections />
+	<HTR />
+{/if}
 
-<figure>
-	<img alt='Success Kid' src='successkid.jpg'>
-	<figcaption>Have fun with Sapper!</figcaption>
-</figure>
-
-<p>Logged in?</p>
-<button on:click={console.log($sessionId)}>session</button>
 {$sessionId}
 
 <style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
-	}
 
-	h1 {
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-	}
-
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
-	}
-
-	p {
-		margin: 1em auto;
-	}
-
-	@media (min-width: 480px) {
-		h1 {
-			font-size: 4em;
-		}
-	}
 </style>
