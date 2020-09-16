@@ -73,6 +73,7 @@
         });
         const data = await res.json();
         console.log(data);
+        console.log('fetchdata above')
         return data;
     }
 
@@ -169,6 +170,7 @@
     </select>
 {/if}
 {#if selectedDoc}
+    {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments"/>{/if}
     <button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</button>
     Status: {statusLA}
 {/if}
