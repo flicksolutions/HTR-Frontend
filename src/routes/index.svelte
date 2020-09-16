@@ -5,10 +5,10 @@
 	import Collections from '../components/Collections.svelte';
 
 	onMount(() => {
-		if (!$sessionId) {
+		/*if (!$sessionId) {
 			console.log('sessionID is not truthy!')
 			fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
-		}
+		}*/
 	});
 </script>
 
