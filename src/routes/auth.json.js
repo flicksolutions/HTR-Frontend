@@ -9,7 +9,7 @@ const loggedIn = async () => {
             'Access-Control-Allow-Origin': '*'
 
         },
-        body: 'user=transkribus@flicks.jetzt&pw=t{f/I<;!B4{nwBeWfbg2Iw'
+        body: 'user=transkribus@flicks.jetzt&pw=dummy'
     });
     const data = await response.text();
     const sessionId = data.substring(data.indexOf('<sessionId>')+11,data.indexOf('</sessionId>'));

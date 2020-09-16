@@ -12,7 +12,7 @@
                 'Access-Control-Allow-Origin': '*'
 
             },
-            body: 'user=transkribus@flicks.jetzt&pw=t{f/I<;!B4{nwBeWfbg2Iw'
+            body: 'user='+user+'&pw='+pw
         });
         const data = await response.text();
         const id = await data.substring(data.indexOf('<sessionId>')+11,data.indexOf('</sessionId>'));
