@@ -47,10 +47,10 @@
                 } else if (job.jobId === reloadJob && job.state === "FINISHED") {
                     console.log("reloading xml!");
                     getDocXml(selectedDoc.docId, 1).then(res => docXML = res);
+                    reloadJob = null;
                 }
             });
-        }, 10000);
-        //console.log(collections);
+        }, 5000);
     });
 
     const fetchDocs = async (id) => {
@@ -92,22 +92,29 @@
             headers: {
                 'content-type': 'application/xml',
             },
-            /*body: {
-                    docList: {
-                        docs: [ {
-                            docId: id,
-                            pageList: {
-                                pages: [ {
-                                    pageId: 19719563,
-                                }]
-                            }
-                        } ]
-                }
-            }*/
             body: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><jobParameters><docList><docs><docId>${id}</docId><pageList>${pagelist}</pageList></docs></docList><params/></jobParameters>`
         });
         const data = await res.text();
         const jobId = data.substring(data.indexOf('<jobId>')+7,data.indexOf('</jobId>'));
+        console.log(data);
+        if (res.status === 200) {
+            statusLA = getJob(jobId)
+            return true;
+        } else {
+            return res.status;
+        }
+    };
+
+    const startHTR = async (id) => {
+        let pagelist;
+        fullDoc.pageList.pages.forEach(page => pagelist += "<pages><pageId>"+page.pageId+"</pageId></pages>");
+        const res = await fetch(`https://transkribus.eu/TrpServer/rest/recognition/${selectedCol.colId}/19829/htrCITlab?pages=1-${fullDoc.pageList.pages.length}&id=${id}&JSESSIONID=${$sessionId}`, {
+            method: 'POST',
+            headers: {
+
+            },
+        });
+        const data = await res.json();
         console.log(data);
         if (res.status === 200) {
             statusLA = getJob(jobId)
@@ -145,44 +152,66 @@
         console.log('data:');
         const data = await res.json();
         console.log(data)
-        const xmlRes = await fetch(data[0].url);
+        /*const xmlRes = await fetch(data[0].url);
         const xml = await xmlRes.text();
         console.log('xml:')
-        console.log(xml)
-        return xml;
+        console.log(xml)*/
+        return data[0].url;
     }
 </script>
+<div class="container">
+    {#await collections then colls}
+        <h2>Collection wählen:</h2>
+        <select name="collection" size="{colls.length}" bind:value={selectedCol}>
+            {#each colls as collection}
+                <option value={collection}>{collection.colName}</option>
+            {/each}
+        </select>
+    {/await}
+    {#if docs}
+        <h2>Dokument wählen:</h2>
+        <select name="document" size="{docs.length}" bind:value={selectedDoc}>
+            {#each docs as doc}
+                <option value={doc}>{doc.title}</option>
+            {/each}
+        </select>
+    {/if}
+    {#if selectedDoc}
+        {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments"/>{/if}
+        <button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</button>
+        <button on:click={() => startHTR(selectedDoc.docId)}>start HTR</button>
+        Status: {statusLA}
+    {/if}
+    {#await docXML then data}
+        <div class="download">
+            <p>Download XML:</p>
+            {#each fullDoc.pageList.pages as page, i}
+                {#await getDocXml(selectedDoc.docId, i+1) then link}
+                    <a href="{link}">Seite {i+1}</a>
+                {/await}
+            {/each}
+        </div>
+    {/await}
 
-{#await collections then colls}
-    <h2>Collection wählen:</h2>
-    <select name="collection" size="{colls.length}" bind:value={selectedCol}>
-        {#each colls as collection}
-            <option value={collection}>{collection.colName}</option>
-        {/each}
-    </select>
-{/await}
-{#if docs}
-    <h2>Dokument wählen:</h2>
-    <select name="document" size="{docs.length}" bind:value={selectedDoc}>
-        {#each docs as doc}
-            <option value={doc}>{doc.title}</option>
-        {/each}
-    </select>
-{/if}
-{#if selectedDoc}
-    {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments"/>{/if}
-    <button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</button>
-    Status: {statusLA}
-{/if}
-{#await docXML then data}
-    {docXML}
-{/await}
+    {#await jobs then jobList}
+        <div class="joblist">
+            <h2>Jobs</h2>
+            <ul>
+            {#each jobList as job}
+                <li>{job.jobId}: {job.description}<button on:click={() => console.log(getJob(job.jobId))}>get job</button></li>
+            {/each}
+            </ul>
+        </div>
+    {/await}
+</div>
 
-{#await jobs then jobList}
-    <h2>Jobs</h2>
-    <ul>
-    {#each jobList as job}
-        <li>{job.jobId}: {job.description}<button on:click={() => console.log(getJob(job.jobId))}>get job</button></li>
-    {/each}
-    </ul>
-{/await}
+<style>
+    .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    img {
+        max-width: 100%;
+        grid-column: 1 / -1;
+    }
+</style>
