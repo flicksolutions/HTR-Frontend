@@ -185,11 +185,13 @@
     {#await docXML then data}
         <div class="download">
             <p>Download XML:</p>
-            {#each fullDoc.pageList.pages as page, i}
-                {#await getDocXml(selectedDoc.docId, i+1) then link}
-                    <a href="{link}">Seite {i+1}</a>
-                {/await}
-            {/each}
+            {#if fullDoc}
+                {#each fullDoc.pageList.pages as page, i}
+                    {#await getDocXml(selectedDoc.docId, i+1) then link}
+                        <a href="{link}">Seite {i+1}</a>
+                    {/await}
+                {/each}
+            {/if}
         </div>
     {/await}
 
