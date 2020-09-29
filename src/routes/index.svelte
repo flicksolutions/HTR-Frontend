@@ -3,6 +3,9 @@
 	import { sessionId } from './_store';
 	import Login from '../components/Login.svelte';
 	import Collections from '../components/Collections.svelte';
+	import Upload from '../components/Upload.svelte';
+
+	let action;
 
 	onMount(() => {
 		/*if (!$sessionId) {
@@ -20,7 +23,12 @@
 {#if !$sessionId}
 	<Login />
 {:else}
-	<Collections />
+	{#if !action}
+		<p>Would you like to upload files or process files already on the server?</p>
+		<button on:click={() => {action = Upload}}>upload!</button> <button on:click={() => {action = Collections}}>process!</button>
+	{:else}
+		<svelte:component this={action} />
+	{/if}
 {/if}
 
 <style>

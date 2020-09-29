@@ -205,6 +205,8 @@
             </ul>
         </div>
     {/await}
+
+    {$sessionId}
 </div>
 
 <style>
