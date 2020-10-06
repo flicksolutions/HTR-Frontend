@@ -6,19 +6,26 @@
 	import Upload from '../components/Upload.svelte';
 
 	let action;
+	const auth = () => {
+		var keycloak = new Keycloak(JSON.parse('{"realm": "readcoop", "auth-server-url": "https://account.readcoop.eu/auth", "ssl-required": "external", "resource": "unibe_transkribus_test", "public-client": true, "confidential-port": 0}'));
+		keycloak.init().then(function (authenticated) {
+			alert(authenticated ? 'authenticated' : 'not authenticated');
+		}).catch(function () {
+			alert('failed to initialize');
+		});
+		console.log("auth");
+	}
 
 	onMount(() => {
-		/*if (!$sessionId) {
-			console.log('sessionID is not truthy!')
-			fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
-		}*/
+
 	});
 </script>
 
 <svelte:head>
+	<script src="https://account.readcoop.eu/auth/js/keycloak.js"></script>
 	<title>HTR Frontend</title>
 </svelte:head>
-
+<button on:click={auth}>Use this button to initialise Keycloak!</button>
 <h1>HTR-Frontend</h1>
 {#if !$sessionId}
 	<Login />
