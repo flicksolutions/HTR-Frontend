@@ -5,6 +5,7 @@ It works with sapper&svelte. Though in the future, sapper will not be neccessary
 
 ## TODO
 
+- oAuth Login
 - Clean up code
 - Organise in seperate components
 - build the project svelte-only (since no sapper-features are used)
