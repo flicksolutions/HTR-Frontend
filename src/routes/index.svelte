@@ -5,24 +5,34 @@
 	import Collections from '../components/Collections.svelte';
 	import Upload from '../components/Upload.svelte';
 
+
 	let action;
+
+	let Keycloak
+
+	onMount(async () => {
+		const module = await import ('../keycloak');
+		Keycloak = module.default;
+	});
+
 	const auth = () => {
-		var keycloak = new Keycloak(JSON.parse('{"realm": "readcoop", "auth-server-url": "https://account.readcoop.eu/auth", "ssl-required": "external", "resource": "unibe_transkribus_test", "public-client": true, "confidential-port": 0}'));
+		var keycloak = new Keycloak({realm: "readcoop", url: "https://account.readcoop.eu/auth", resource: "unibe_transkribus_test", clientId: "unibe_transkribus_test"});
 		keycloak.init().then(function (authenticated) {
 			alert(authenticated ? 'authenticated' : 'not authenticated');
 		}).catch(function () {
 			alert('failed to initialize');
 		});
+		console.log(keycloak)
+		//let login = keycloak.login({url:"https://account.readcoop.eu/auth",email: "transkribus@flicks.jetzt", password: "dummy"})
+		let login = keycloak.login()
+		console.log(login)
 		console.log("auth");
 	}
 
-	onMount(() => {
 
-	});
 </script>
 
 <svelte:head>
-	<script src="https://account.readcoop.eu/auth/js/keycloak.js"></script>
 	<title>HTR Frontend</title>
 </svelte:head>
 <button on:click={auth}>Use this button to initialise Keycloak!</button>
