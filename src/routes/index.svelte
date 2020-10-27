@@ -8,7 +8,8 @@
 
 	let action;
 
-	let Keycloak
+	let Keycloak;
+	let keycloak;
 
 	onMount(async () => {
 		const module = await import ('../keycloak');
@@ -16,7 +17,7 @@
 	});
 
 	const auth = () => {
-		var keycloak = new Keycloak({realm: "readcoop", url: "https://account.readcoop.eu/auth", resource: "unibe_transkribus_test", clientId: "unibe_transkribus_test"});
+		keycloak = new Keycloak({realm: "readcoop", url: "https://account.readcoop.eu/auth", resource: "unibe_transkribus_test", clientId: "unibe_transkribus_test"});
 		keycloak.init().then(function (authenticated) {
 			alert(authenticated ? 'authenticated' : 'not authenticated');
 		}).catch(function () {
@@ -25,8 +26,6 @@
 		console.log(keycloak)
 		//let login = keycloak.login({url:"https://account.readcoop.eu/auth",email: "transkribus@flicks.jetzt", password: "dummy"})
 		let login = keycloak.login()
-		console.log(login)
-		console.log("auth");
 	}
 
 
@@ -36,6 +35,7 @@
 	<title>HTR Frontend</title>
 </svelte:head>
 <button on:click={auth}>Use this button to initialise Keycloak!</button>
+<button on:click={() => {console.log(keycloak)}}>Token</button>
 <h1>HTR-Frontend</h1>
 {#if !$sessionId}
 	<Login />
