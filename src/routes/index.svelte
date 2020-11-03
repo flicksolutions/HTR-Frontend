@@ -14,18 +14,14 @@
 	onMount(async () => {
 		const module = await import ('../keycloak');
 		Keycloak = module.default;
+		keycloak = new Keycloak({realm: "readcoop", url: "https://account.readcoop.eu/auth", clientId: "unibe_transkribus_test", username: "transkribus@flicks.jetzt", password: "dummy"});
+		keycloak.init()
 	});
 
 	const auth = () => {
-		keycloak = new Keycloak({realm: "readcoop", url: "https://account.readcoop.eu/auth", resource: "unibe_transkribus_test", clientId: "unibe_transkribus_test"});
-		keycloak.init().then(function (authenticated) {
-			alert(authenticated ? 'authenticated' : 'not authenticated');
-		}).catch(function () {
-			alert('failed to initialize');
-		});
-		console.log(keycloak)
 		//let login = keycloak.login({url:"https://account.readcoop.eu/auth",email: "transkribus@flicks.jetzt", password: "dummy"})
-		let login = keycloak.login()
+		keycloak.login()
+		console.log(keycloak)
 	}
 
 
@@ -35,7 +31,7 @@
 	<title>HTR Frontend</title>
 </svelte:head>
 <button on:click={auth}>Use this button to initialise Keycloak!</button>
-<button on:click={() => {console.log(keycloak)}}>Token</button>
+<button on:click={() => {console.log(keycloak.token)}}>Token</button>
 <h1>HTR-Frontend</h1>
 {#if !$sessionId}
 	<Login />
