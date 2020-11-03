@@ -16,13 +16,9 @@
 
     onMount(async () => {
         console.log('running collections onmount')
-        let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list', {
+        let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+$token, {
             method: 'GET',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'JSESSIONID': $token
-            },
-            credentials: 'include'
+            mode: 'no-cors',
         });
         let data;
         if (response.status === 200) {
@@ -30,12 +26,13 @@
             collections = await response.json();
         } else {
             console.log('session needs to be refreshed!')
-            fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
+            //fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
             response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+$token, {
                 method: 'GET',
                 headers: {
                     'Access-Control-Allow-Origin': '*'
-                }
+                },
+                mode: 'no-cors',
             });
             const collections = await response.json();
         }

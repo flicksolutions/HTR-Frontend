@@ -41,6 +41,14 @@
 			},800);
 		}
 	}
+	const testfetch = async () => {
+		let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+keycloak.sessionId, {
+			method: 'GET',
+			mode: 'no-cors',
+		})
+		let collections = await response.json();
+		console.log(collections)
+	}
 
 </script>
 
@@ -48,7 +56,7 @@
 	<title>HTR Frontend</title>
 </svelte:head>
 <h1>HTR-Frontend</h1>
-<button on:click={console.log(keycloak.authenticated)}>auth</button>
+<button on:click={testfetch}>testfetch</button>
 {#if !$authenticated}
 	<p>Bitte loggen Sie sich ein: </p>
 	<button on:click={auth}>Bei Transkribus einloggen</button>
