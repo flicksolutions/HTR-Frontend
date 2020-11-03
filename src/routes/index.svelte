@@ -1,7 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
 	import { token, authenticated } from './_store';
-	import Login from '../components/Login.svelte';
 	import Collections from '../components/Collections.svelte';
 	import Upload from '../components/Upload.svelte';
 
@@ -24,8 +23,8 @@
 
 	const auth = () => {
 		if (keycloak.authenticated) {
-			authenticated.set(true);
-			token.set(keycloak.token);
+			$authenticated = true;
+			$token = keycloak.token;
 		} else {
 			keycloak.login({loginHint: "transkribus@flicks.jetzt"})
 		}
@@ -49,8 +48,6 @@
 	<title>HTR Frontend</title>
 </svelte:head>
 <h1>HTR-Frontend</h1>
-<p>Token: {keycloak.token}</p>
-<p>auth: {$authenticated}</p>
 <button on:click={console.log(keycloak.authenticated)}>auth</button>
 {#if !$authenticated}
 	<p>Bitte loggen Sie sich ein: </p>

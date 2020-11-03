@@ -1,4 +1,4 @@
-import { writable } from 'svelte-persistent-store/dist/session';
+import { writable } from 'svelte/store';
 
-export const token = writable('sessionId', null);
-export const authenticated = writable('sessionId', false);
+export let token = writable(null);
+export let authenticated = writable(false);
