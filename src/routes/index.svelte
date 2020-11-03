@@ -1,13 +1,12 @@
 <script>
 	import { onMount } from 'svelte';
-	import { sessionId } from './_store';
+	import { token, authenticated } from './_store';
 	import Login from '../components/Login.svelte';
 	import Collections from '../components/Collections.svelte';
 	import Upload from '../components/Upload.svelte';
 
 
 	let action;
-	let authenticated = false;
 	let Keycloak;
 	let keycloak = {};
 
@@ -25,25 +24,21 @@
 
 	const auth = () => {
 		if (keycloak.authenticated) {
-			authenticated = true;
+			authenticated.set(true);
+			token.set(keycloak.token);
 		} else {
 			keycloak.login({loginHint: "transkribus@flicks.jetzt"})
 		}
 		console.log(keycloak)
-		console.log(keycloak.token)
 	}
 
 	//$: if (keycloak && keycloak.token) {sessionId.set(keycloak.token)}
 	$: console.log("value of authenticated changed!" + keycloak.authenticated)
 	$: {
-		console.log("running big batch!")
 		if (keycloak) {
-			console.log(keycloak)
-			console.log(keycloak["authenticated"])
-			console.log("keycloak:")
-			setTimeout(() => {
-				console.log(JSON.stringify(keycloak.authenticated))
-				authenticated = keycloak.authenticated;
+			setTimeout(() => { //we need to wait for the script to do it's job... This is not a clean way to do things.
+				authenticated.set(keycloak.authenticated);
+				token.set(keycloak.token);
 			},800);
 		}
 	}
@@ -55,9 +50,9 @@
 </svelte:head>
 <h1>HTR-Frontend</h1>
 <p>Token: {keycloak.token}</p>
-<p>auth: {authenticated}</p>
+<p>auth: {$authenticated}</p>
 <button on:click={console.log(keycloak.authenticated)}>auth</button>
-{#if !authenticated}
+{#if !$authenticated}
 	<p>Bitte loggen Sie sich ein: </p>
 	<button on:click={auth}>Bei Transkribus einloggen</button>
 {:else}

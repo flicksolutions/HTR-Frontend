@@ -1,26 +1,25 @@
 <script>
-    import { sessionId } from '../routes/_store';
 
     let user;
     let pw;
+    /*
+        const loginTrans = async (user, pw) => {
+            const response = await fetch('https://transkribus.eu/TrpServer/rest/auth/login', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'Access-Control-Allow-Origin': '*'
 
-    const loginTrans = async (user, pw) => {
-        const response = await fetch('https://transkribus.eu/TrpServer/rest/auth/login', {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                'Access-Control-Allow-Origin': '*'
-
-            },
-            body: 'user='+user+'&pw='+pw
-        });
-        const data = await response.text();
-        const id = await data.substring(data.indexOf('<sessionId>')+11,data.indexOf('</sessionId>'));
-        //console.log(id)
-        sessionId.set(id);
-        console.log($sessionId);
-        return id;
-    }
+                },
+                body: 'user='+user+'&pw='+pw
+            });
+            const data = await response.text();
+            const id = await data.substring(data.indexOf('<sessionId>')+11,data.indexOf('</sessionId>'));
+            //console.log(id)
+            sessionId.set(id);
+            console.log($sessionId);
+            return id;
+        }*/
 </script>
 
 <div class="login">

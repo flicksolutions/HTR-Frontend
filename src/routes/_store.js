@@ -1,9 +1,4 @@
-import {readable, writable} from 'svelte-persistent-store/dist/session';
-//const fetch = require('node-fetch');
+import { writable } from 'svelte-persistent-store/dist/session';
 
-const createSessionId = (set) => {
-    fetch(`auth.json`).then(res => res.json()).then(json => set(json.sessionId));
-    return () => {console.log("stop")}
-};
-
-export const sessionId = writable('sessionId', 0);
+export const token = writable('sessionId', null);
+export const authenticated = writable('sessionId', false);
