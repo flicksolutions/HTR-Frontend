@@ -2,6 +2,8 @@
     import { sessionId } from '../routes/_store';
     import { onMount } from 'svelte';
 
+    export let keycloak;
+
     let collection = {
         name: "worck_testcollection",
         id: 76207
@@ -23,7 +25,7 @@
         }
     };
     let files;
-
+    $: if (keycloak.token) sessionId.set(keycloak.token)
     $: console.log(meta);
     $: if (files && files[0]) {meta.pagelist.pages[0].fileName = files[0].name}
 

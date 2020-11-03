@@ -12,13 +12,18 @@
     let fullDoc;
     let reloadJob;
 
+    export let keycloak;
+
+    $: if (keycloak.token) sessionId.set(keycloak.token)
+
     onMount(async () => {
         console.log('running collections onmount')
-        let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+$sessionId, {
+        let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list', {
             method: 'GET',
             headers: {
                 'Access-Control-Allow-Origin': '*'
-            }
+            },
+            credentials: 'include'
         });
         let data;
         if (response.status === 200) {
