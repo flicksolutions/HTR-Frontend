@@ -42,10 +42,11 @@
 		}
 	}
 	const testfetch = async () => {
+		console.log("running testfetch")
 		console.log("token: " + keycloak.token)
 		let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list', {
 			method: 'GET',
-			mode: 'no-cors',
+			//mode: 'no-cors',
 			withCredentials: true,
 			credentials: 'include',
 			headers: {
@@ -56,6 +57,16 @@
 		console.log(collections)
 	}
 
+	const testrequest = async () => {
+		console.log("running testrequest")
+		console.log("token: " + keycloak.token)
+		const req = new XMLHttpRequest();
+		req.open('GET', 'https://transkribus.eu/TrpServer/rest/collections/list', true);
+		req.setRequestHeader('Accept', 'application/json');
+		req.setRequestHeader('Authorization', 'Bearer ' + keycloak.token);
+		req.send();
+	}
+
 </script>
 
 <svelte:head>
@@ -63,6 +74,7 @@
 </svelte:head>
 <h1>HTR-Frontend</h1>
 <button on:click={testfetch}>testfetch</button>
+<button on:click={testrequest}>testrequest</button>
 {#if !$authenticated}
 	<p>Bitte loggen Sie sich ein: </p>
 	<button on:click={auth}>Bei Transkribus einloggen</button>
