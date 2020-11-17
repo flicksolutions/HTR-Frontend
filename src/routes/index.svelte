@@ -42,9 +42,15 @@
 		}
 	}
 	const testfetch = async () => {
-		let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+keycloak.sessionId, {
+		console.log("token: " + keycloak.token)
+		let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list', {
 			method: 'GET',
 			mode: 'no-cors',
+			withCredentials: true,
+			credentials: 'include',
+			headers: {
+				'Authorization': 'Bearer ' + keycloak.token
+			}
 		})
 		let collections = await response.json();
 		console.log(collections)
