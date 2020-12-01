@@ -8,6 +8,7 @@
 	let action;
 	let Keycloak;
 	let keycloak = {};
+	let customUrl = 'https://transkribus.eu/TrpServerTesting/rest/collections/list';
 
 	onMount(async () => {
 		console.log("calling onmount")
@@ -41,12 +42,11 @@
 			},800);
 		}
 	}
-	const testfetch = async () => {
+	const testfetch = async (url) => {
 		console.log("running testfetch")
-		console.log("token: " + keycloak.token)
-		let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list', {
+		//console.log("token: " + keycloak.token)
+		let response = await fetch(url, {
 			method: 'GET',
-			//mode: 'no-cors',
 			withCredentials: true,
 			credentials: 'include',
 			headers: {
@@ -54,17 +54,22 @@
 			}
 		})
 		let collections = await response.json();
+		console.log("this is the response")
+		console.log(response)
+		console.log("json() consumed:")
 		console.log(collections)
 	}
 
 	const testrequest = async () => {
 		console.log("running testrequest")
-		console.log("token: " + keycloak.token)
+		//console.log("token: " + keycloak.token)
 		const req = new XMLHttpRequest();
-		req.open('GET', 'https://transkribus.eu/TrpServer/rest/collections/list', true);
+		req.open('GET', 'https://transkribus.eu/TrpServerTesting/rest/collections/list', true);
 		req.setRequestHeader('Accept', 'application/json');
 		req.setRequestHeader('Authorization', 'Bearer ' + keycloak.token);
 		req.send();
+
+		console.log(await req)
 	}
 
 </script>
@@ -73,12 +78,16 @@
 	<title>HTR Frontend</title>
 </svelte:head>
 <h1>HTR-Frontend</h1>
-<button on:click={testfetch}>testfetch</button>
-<button on:click={testrequest}>testrequest</button>
+<!-- <button on:click={testrequest}>testrequest</button>-->
 {#if !$authenticated}
 	<p>Bitte loggen Sie sich ein: </p>
 	<button on:click={auth}>Bei Transkribus einloggen</button>
 {:else}
+	<button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/list')}>testfetch collections/list</button>
+	<button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/76206/list')}>testfetch collections/76206/list</button>
+	<input bind:value={customUrl} size="100">
+	<button on:click={() => testfetch(customUrl)}>testfetch {customUrl}</button>
+
 	{#if !action}
 		<p>Would you like to upload files or process files already on the server?</p>
 		<button on:click={() => {action = Upload}}>upload!</button> <button on:click={() => {action = Collections}}>process!</button>
