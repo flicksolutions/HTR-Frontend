@@ -6,7 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 
 const production = !process.env.ROLLUP_WATCH;
-const smelte=require("smelte/rollup-plugin-smelte");
+const smelte = require("smelte/rollup-plugin-smelte");
 
 function serve() {
 	let server;
