@@ -11,16 +11,17 @@
 	let Keycloak;
 	let keycloak = {};
 	let customUrl = 'https://transkribus.eu/TrpServerTesting/rest/collections/list';
-	onMount(async () => {
-		const module = await import ('./keycloak');
-		Keycloak = module.default;
-		keycloak = new Keycloak({
+
+	const initKeycloak = () => {
+		console.log("init keycloak")
+		keycloak = new window.Keycloak({
 			realm: "readcoop",
 			url: "https://account.readcoop.eu/auth",
 			clientId: "unibe_transkribus_test",
 		});
 		keycloak.init()
-	});
+	}
+
 	const auth = () => {
 		if (keycloak.authenticated) {
 			$authenticated = true;
@@ -60,6 +61,7 @@
 	<title>HTR Frontend</title>
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Material+Icons&display=swap"
 		  rel="stylesheet" />
+	<script src="https://account.readcoop.eu/auth/js/keycloak.js" on:load={initKeycloak}></script>
 </svelte:head>
 
 <main>
@@ -72,7 +74,7 @@
 		<button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/list')}>testfetch collections/list</button>
 		<button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/76206/list')}>testfetch collections/76206/list</button>
 		<input bind:value={customUrl} size="100">
-		<button on:click={() => testfetch(customUrl)}>testfetch {customUrl}</button>
+		<Button on:click={() => testfetch(customUrl)}>testfetch {customUrl}</Button>
 
 		{#if !action}
 			<p>Would you like to upload files or process files already on the server?</p>
