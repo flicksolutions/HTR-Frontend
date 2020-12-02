@@ -11,7 +11,6 @@
 	let customUrl = 'https://transkribus.eu/TrpServerTesting/rest/collections/list';
 
 	onMount(async () => {
-		console.log("calling onmount")
 		const module = await import ('../keycloak');
 		Keycloak = module.default;
 		keycloak = new Keycloak({
@@ -29,10 +28,8 @@
 		} else {
 			keycloak.login({loginHint: "transkribus@flicks.jetzt"})
 		}
-		console.log(keycloak)
+		//console.log(keycloak)
 	}
-
-	//$: if (keycloak && keycloak.token) {sessionId.set(keycloak.token)}
 	$: console.log("value of authenticated changed!" + keycloak.authenticated)
 	$: {
 		if (keycloak) {
@@ -44,7 +41,6 @@
 	}
 	const testfetch = async (url) => {
 		console.log("running testfetch")
-		//console.log("token: " + keycloak.token)
 		let response = await fetch(url, {
 			method: 'GET',
 			withCredentials: true,
@@ -59,19 +55,6 @@
 		console.log("json() consumed:")
 		console.log(collections)
 	}
-
-	const testrequest = async () => {
-		console.log("running testrequest")
-		//console.log("token: " + keycloak.token)
-		const req = new XMLHttpRequest();
-		req.open('GET', 'https://transkribus.eu/TrpServerTesting/rest/collections/list', true);
-		req.setRequestHeader('Accept', 'application/json');
-		req.setRequestHeader('Authorization', 'Bearer ' + keycloak.token);
-		req.send();
-
-		console.log(await req)
-	}
-
 </script>
 
 <svelte:head>

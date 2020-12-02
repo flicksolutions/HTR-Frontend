@@ -1,5 +1,5 @@
 <script>
-    import { token, authenticated } from '../routes/_store';
+    import { token, authenticated, URL } from '../routes/_store';
     import { onMount } from 'svelte';
 
     let collections = new Promise(() => {});
@@ -16,9 +16,13 @@
 
     onMount(async () => {
         console.log('running collections onmount')
-        let response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+$token, {
+        let response = await fetch(`${URL}/rest/collections/list`, {
             method: 'GET',
-            mode: 'no-cors',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token
+            }
         });
         let data;
         if (response.status === 200) {
@@ -27,12 +31,13 @@
         } else {
             console.log('session needs to be refreshed!')
             //fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
-            response = await fetch('https://transkribus.eu/TrpServer/rest/collections/list?JSESSIONID='+$token, {
+            response = await fetch(`${URL}/rest/collections/list`, {
                 method: 'GET',
+                withCredentials: true,
+                credentials: 'include',
                 headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                mode: 'no-cors',
+                    'Authorization': 'Bearer ' + keycloak.token
+                }
             });
             const collections = await response.json();
         }
@@ -56,11 +61,13 @@
 
     const fetchDocs = async (id) => {
         console.log('running fetchDocs')
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/collections/${id}/list?JSESSIONID=${$token}`, {
-        method: 'GET',
-        headers: {
-            'Access-Control-Allow-Origin': '*'
-        }
+        const res = await fetch(`${URL}/rest/collections/${id}/list`, {
+            method: 'GET',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token
+            }
         });
         const data = await res.json();
         console.log(data);
@@ -69,8 +76,13 @@
 
     const fetchFull = async (id) => {
         console.log("run fetchFull");
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/collections/${selectedCol.colId}/${id}/fulldoc?JSESSIONID=${$token}`, {
+        const res = await fetch(`${URL}/rest/collections/${selectedCol.colId}/${id}/fulldoc`, {
             method: 'GET',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token
+            }
         });
         const data = await res.json();
         console.log(data);
@@ -88,10 +100,13 @@
         let pagelist;
         fullDoc.pageList.pages.forEach(page => pagelist += "<pages><pageId>"+page.pageId+"</pageId></pages>");
         console.log(pagelist);
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/LA?collId=${selectedCol.colId}&doBlockSeg=true&doLineSeg=true&doWordSeg=false&jobImpl=CITlabAdvancedLaJob&doCreateJobBatch=false&JSESSIONID=${$token}`, {
+        const res = await fetch(`${URL}/rest/LA?collId=${selectedCol.colId}&doBlockSeg=true&doLineSeg=true&doWordSeg=false&jobImpl=CITlabAdvancedLaJob&doCreateJobBatch=false`, {
             method: 'POST',
+            withCredentials: true,
+            credentials: 'include',
             headers: {
                 'content-type': 'application/xml',
+                'Authorization': 'Bearer ' + keycloak.token
             },
             body: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><jobParameters><docList><docs><docId>${id}</docId><pageList>${pagelist}</pageList></docs></docList><params/></jobParameters>`
         });
@@ -109,16 +124,18 @@
     const startHTR = async (id) => {
         let pagelist;
         fullDoc.pageList.pages.forEach(page => pagelist += "<pages><pageId>"+page.pageId+"</pageId></pages>");
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/recognition/${selectedCol.colId}/19829/htrCITlab?pages=1-${fullDoc.pageList.pages.length}&id=${id}&JSESSIONID=${$token}`, {
+        const res = await fetch(`${URL}/rest/recognition/${selectedCol.colId}/19829/htrCITlab?pages=1-${fullDoc.pageList.pages.length}&id=${id}`, {
             method: 'POST',
+            withCredentials: true,
+            credentials: 'include',
             headers: {
-
-            },
+                'Authorization': 'Bearer ' + keycloak.token
+            }
         });
         const data = await res.json();
         console.log(data);
         if (res.status === 200) {
-            statusLA = getJob(jobId)
+            statusLA = getJob(id)
             return true;
         } else {
             return res.status;
@@ -127,8 +144,13 @@
 
     const checkJobs = async () => {
         console.log("run checkJobs");
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/jobs/list?JSESSIONID=${$token}`, {
+        const res = await fetch(`${URL}/rest/jobs/list`, {
             method: 'GET',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token
+            }
         });
         const data = await res.json();
         console.log(data);
@@ -137,8 +159,13 @@
 
     const getJob = async (id) => {
         console.log("run getJob");
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/jobs/${id}?JSESSIONID=${$token}`, {
+        const res = await fetch(`${URL}/rest/jobs/${id}`, {
             method: 'GET',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token
+            }
         });
         const data = await res.json();
         console.log(data);
@@ -147,16 +174,17 @@
 
     const getDocXml = async (id, page) => {
         console.log("run getDocXml");
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/collections/${selectedCol.colId}/${id}/${page}/list?JSESSIONID=${$token}`, {
+        const res = await fetch(`${URL}/rest/collections/${selectedCol.colId}/${id}/${page}/list`, {
             method: 'GET',
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + keycloak.token
+            }
         });
         console.log('data:');
         const data = await res.json();
         console.log(data)
-        /*const xmlRes = await fetch(data[0].url);
-        const xml = await xmlRes.text();
-        console.log('xml:')
-        console.log(xml)*/
         return data[0].url;
     }
 </script>
@@ -206,8 +234,6 @@
             </ul>
         </div>
     {/await}
-
-    {$token}
 </div>
 
 <style>
