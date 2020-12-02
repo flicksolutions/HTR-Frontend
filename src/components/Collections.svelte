@@ -18,8 +18,6 @@
         console.log('running collections onmount')
         let response = await fetch(`${URL}/rest/collections/list`, {
             method: 'GET',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
@@ -33,8 +31,6 @@
             //fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
             response = await fetch(`${URL}/rest/collections/list`, {
                 method: 'GET',
-                withCredentials: true,
-                credentials: 'include',
                 headers: {
                     'Authorization': 'Bearer ' + keycloak.token
                 }
@@ -63,8 +59,6 @@
         console.log('running fetchDocs')
         const res = await fetch(`${URL}/rest/collections/${id}/list`, {
             method: 'GET',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
@@ -78,8 +72,6 @@
         console.log("run fetchFull");
         const res = await fetch(`${URL}/rest/collections/${selectedCol.colId}/${id}/fulldoc`, {
             method: 'GET',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
@@ -90,22 +82,14 @@
         return data;
     }
 
-    $: if (selectedCol) {fetchDocs(selectedCol.colId).then(res => docs = res);}
-    $: if (selectedDoc) {
-        fetchFull(selectedDoc.docId).then(res => fullDoc = res);
-        getDocXml(selectedDoc.docId, 1).then(res => docXML = res);
-    }
-
     const startLA = async (id) => {
         let pagelist;
         fullDoc.pageList.pages.forEach(page => pagelist += "<pages><pageId>"+page.pageId+"</pageId></pages>");
         console.log(pagelist);
         const res = await fetch(`${URL}/rest/LA?collId=${selectedCol.colId}&doBlockSeg=true&doLineSeg=true&doWordSeg=false&jobImpl=CITlabAdvancedLaJob&doCreateJobBatch=false`, {
             method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
-                'content-type': 'application/xml',
+                'content-type': 'application/xml; charset=UTF-8',
                 'Authorization': 'Bearer ' + keycloak.token
             },
             body: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><jobParameters><docList><docs><docId>${id}</docId><pageList>${pagelist}</pageList></docs></docList><params/></jobParameters>`
@@ -124,10 +108,9 @@
     const startHTR = async (id) => {
         let pagelist;
         fullDoc.pageList.pages.forEach(page => pagelist += "<pages><pageId>"+page.pageId+"</pageId></pages>");
-        const res = await fetch(`${URL}/rest/recognition/${selectedCol.colId}/19829/htrCITlab?pages=1-${fullDoc.pageList.pages.length}&id=${id}`, {
+        //the ID of the model is just some model up there which will likely not be a good one...19829 for live server
+        const res = await fetch(`${URL}/rest/recognition/${selectedCol.colId}/1161/htrCITlab?pages=1-${fullDoc.pageList.pages.length}&id=${id}`, {
             method: 'POST',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
@@ -146,8 +129,6 @@
         console.log("run checkJobs");
         const res = await fetch(`${URL}/rest/jobs/list`, {
             method: 'GET',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
@@ -161,8 +142,6 @@
         console.log("run getJob");
         const res = await fetch(`${URL}/rest/jobs/${id}`, {
             method: 'GET',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
@@ -176,8 +155,6 @@
         console.log("run getDocXml");
         const res = await fetch(`${URL}/rest/collections/${selectedCol.colId}/${id}/${page}/list`, {
             method: 'GET',
-            withCredentials: true,
-            credentials: 'include',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
@@ -187,6 +164,13 @@
         console.log(data)
         return data[0].url;
     }
+
+    $: if (selectedCol) {fetchDocs(selectedCol.colId).then(res => docs = res);}
+    $: if (selectedDoc) {
+        fetchFull(selectedDoc.docId).then(res => fullDoc = res);
+        getDocXml(selectedDoc.docId, 1).then(res => docXML = res);
+    }
+
 </script>
 <div class="container">
     {#await collections then colls}
@@ -230,6 +214,8 @@
             <ul>
             {#each jobList as job}
                 <li>{job.jobId}: {job.description}<button on:click={() => console.log(getJob(job.jobId))}>get job</button></li>
+            {:else}
+                <li>no job in List!</li>
             {/each}
             </ul>
         </div>

@@ -1,12 +1,11 @@
 <script>
-    import { token, authenticated } from '../routes/_store';
-    import { onMount } from 'svelte';
+    import { URL } from '../routes/_store';
 
     export let keycloak;
 
     let collection = {
-        name: "worck_testcollection",
-        id: 76207
+        name: "Unibe Test",
+        id: 5636
     };
     let meta = {
         md: {
@@ -15,7 +14,7 @@
             genre: "genre",
             writer: "writer",
         },
-        pagelist: {
+        pageList: {
             pages: [
                 {
                     fileName: "filename1",
@@ -27,13 +26,14 @@
     let files;
     //$: if (keycloak.token) sessionId.set(keycloak.token)
     $: console.log(meta);
-    $: if (files && files[0]) {meta.pagelist.pages[0].fileName = files[0].name}
+    $: if (files && files[0]) {meta.pageList.pages[0].fileName = files[0].name}
 
     const startUpload = async () => {
-        const res = await fetch(`https://transkribus.eu/TrpServer/rest/uploads?collId=${collection.id}&JSESSIONID=${$sessionId}`, {
+        const res = await fetch(`${URL}/rest/uploads?collId=${collection.id}`, {
             method: 'POST',
             headers: {
-                'content-type': 'application/json',
+                'content-type': 'application/json', //does not work yet, since this Header is not allowed
+                'Authorization': 'Bearer ' + keycloak.token
             },
             body: JSON.stringify(meta),
             credentials: 'include'

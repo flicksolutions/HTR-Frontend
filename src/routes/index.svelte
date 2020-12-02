@@ -43,8 +43,6 @@
 		console.log("running testfetch")
 		let response = await fetch(url, {
 			method: 'GET',
-			withCredentials: true,
-			credentials: 'include',
 			headers: {
 				'Authorization': 'Bearer ' + keycloak.token
 			}
