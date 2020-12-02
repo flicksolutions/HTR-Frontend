@@ -1,10 +1,19 @@
 <script>
+	import "smelte/src/tailwind.css" ;
+	import Button from "smelte/src/components/Button";
 	export let name;
 </script>
+<svelte:head>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500|Material+Icons&display=swap"
+		  rel="stylesheet" />
+</svelte:head>
 
 <main>
 	<h1>Hello {name}!</h1>
 	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<div class="py-2">
+		<Button>Button</Button>
+	</div>
 </main>
 
 <style>
