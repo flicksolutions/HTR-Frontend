@@ -1,6 +1,8 @@
 <script>
     import {token, authenticated, URL} from './_store';
     import {onMount} from 'svelte';
+    import "smelte/src/tailwind.css" ;
+    import Button from "smelte/src/components/Button";
 
     let collections = new Promise(() => {
     });
@@ -184,8 +186,8 @@
     {/if}
     {#if selectedDoc}
         {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments"/>{/if}
-        <button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</button>
-        <button on:click={() => startHTR(selectedDoc.docId)}>start HTR</button>
+        <Button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</Button>
+        <Button on:click={() => startHTR(selectedDoc.docId)}>start HTR</Button>
         Status: {statusLA}
     {/if}
     {#await docXML then data}
@@ -207,7 +209,7 @@
             <ul>
                 {#each jobList as job}
                     <li>{job.jobId}: {job.description}
-                        <button on:click={() => console.log(getJob(job.jobId))}>get job</button>
+                        <Button on:click={() => console.log(getJob(job.jobId))}>get job</Button>
                     </li>
                 {:else}
                     <li>no job in List!</li>

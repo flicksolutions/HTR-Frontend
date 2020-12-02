@@ -69,16 +69,16 @@
 	<!-- <button on:click={testrequest}>testrequest</button>-->
 	{#if !$authenticated}
 		<p>Bitte loggen Sie sich ein: </p>
-		<button on:click={auth}>Bei Transkribus einloggen</button>
+		<Button on:click={auth}>Bei Transkribus einloggen</Button>
 	{:else}
-		<button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/list')}>testfetch collections/list</button>
-		<button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/76206/list')}>testfetch collections/76206/list</button>
+		<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/list')}>testfetch collections/list</Button>
+		<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/76206/list')}>testfetch collections/76206/list</Button>
 		<input bind:value={customUrl} size="100">
 		<Button on:click={() => testfetch(customUrl)}>testfetch {customUrl}</Button>
 
 		{#if !action}
 			<p>Would you like to upload files or process files already on the server?</p>
-			<button on:click={() => {action = Upload}}>upload!</button> <button on:click={() => {action = Collections}}>process!</button>
+			<Button on:click={() => {action = Upload}}>upload!</Button> <Button on:click={() => {action = Collections}}>process!</Button>
 		{:else}
 			<svelte:component this={action} { keycloak } />
 		{/if}
