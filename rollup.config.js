@@ -3,10 +3,10 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-import css from 'rollup-plugin-css-only';
+//import css from 'rollup-plugin-css-only';
 
 const production = !process.env.ROLLUP_WATCH;
-//const smelte = require("smelte/rollup-plugin-smelte");
+const smelte = require("smelte/rollup-plugin-smelte");
 
 function serve() {
 	let server;
@@ -67,7 +67,7 @@ export default {
 				dev: !production
 			}
 		}),
-		/*smelte({
+		smelte({
 			purge: production,
 			output: "public/global.css", // it defaults to static/global.css which is probably what you expect in Sapper
 			postcss: [], // Your PostCSS plugins
@@ -86,10 +86,10 @@ export default {
 				darkMode: true,
 			},
 			// Any other props will be applied on top of default Smelte tailwind.config.js
-		}),*/
+		}),
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
-		css({ output: 'bundle.css' }),
+		//css({ output: 'bundle.css' }),
 
 	server: {
 		input: config.server.input(),
