@@ -72,8 +72,8 @@
 	<h1>HTR-Frontend</h1>
 	<!-- <button on:click={testrequest}>testrequest</button>-->
 	{#if !$authenticated}
-		<p>Bitte loggen Sie sich ein: </p>
-		<Button on:click={auth}>Bei Transkribus einloggen</Button>
+		<p>Please log in at Transkribus </p>
+		<Button on:click={auth}>Log In</Button>
 	{:else}
 		{#if !action}
 			<p>Would you like to upload files or process files already on the server?</p>
