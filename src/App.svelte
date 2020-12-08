@@ -1,16 +1,20 @@
 <script>
 	import "smelte/src/tailwind.css" ;
 	import Button from "smelte/src/components/Button";
+	import TextField from "smelte/src/components/TextField";
+	import Switch from "smelte/src/components/Switch";
 	import { onMount } from 'svelte';
 	import { token, authenticated } from './_store';
 	import Collections from './Collections.svelte';
 	import Upload from './Upload.svelte';
+	import { fly } from 'svelte/transition';
 
 
 	let action;
 	let Keycloak;
 	let keycloak = {};
 	let customUrl = 'https://transkribus.eu/TrpServerTesting/rest/collections/list';
+	let devMode = false;
 
 	const initKeycloak = () => {
 		console.log("init keycloak")
@@ -71,16 +75,20 @@
 		<p>Bitte loggen Sie sich ein: </p>
 		<Button on:click={auth}>Bei Transkribus einloggen</Button>
 	{:else}
-		<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/list')}>testfetch collections/list</Button>
-		<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/76206/list')}>testfetch collections/76206/list</Button>
-		<input bind:value={customUrl} size="100">
-		<Button on:click={() => testfetch(customUrl)}>testfetch {customUrl}</Button>
-
 		{#if !action}
 			<p>Would you like to upload files or process files already on the server?</p>
-			<Button on:click={() => {action = Upload}}>upload!</Button> <Button on:click={() => {action = Collections}}>process!</Button>
+			<p><Button on:click={() => {action = Upload}}>upload!</Button> <Button on:click={() => {action = Collections}}>process!</Button></p>
 		{:else}
 			<svelte:component this={action} { keycloak } />
+		{/if}
+		<p class="mt-5"><Switch bind:value={devMode}/> dev Mode</p>
+		{#if devMode}
+			<div transition:fly={{y:200, duration:1000}}>
+				<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/list')}>testfetch collections/list</Button>
+				<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/76206/list')}>testfetch collections/76206/list</Button>
+				<TextField label="custom URL" bind:value={customUrl} />
+				<Button on:click={() => testfetch(customUrl)}>fetch custom URL</Button>
+			</div>
 		{/if}
 	{/if}
 </main>

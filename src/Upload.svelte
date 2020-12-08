@@ -1,4 +1,6 @@
 <script>
+    import Button from "smelte/src/components/Button";
+    import TextField from "smelte/src/components/TextField";
     import {URL} from './_store';
 
     export let keycloak;
@@ -45,10 +47,10 @@
 </script>
 <div className="container">
     Uploading file into {collection.name}.
-    <input type="text" bind:value={meta.md.title}>
-    <input type="text" bind:value={meta.md.author}>
-    <input type="text" bind:value={meta.md.genre}>
-    <input type="text" bind:value={meta.md.writer}>
+    <TextField bind:value={meta.md.title} />
+    <TextField bind:value={meta.md.author}/>
+    <TextField bind:value={meta.md.genre}/>
+    <TextField bind:value={meta.md.writer}/>
 
     <input type="file" bind:files multiple>
 
