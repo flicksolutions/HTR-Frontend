@@ -167,7 +167,7 @@
         getDocXml(selectedDoc.docId, 1).then(res => docXML = res);
     }
 </script>
-<div className="container">
+<div className="container grid grid-cols-2">
     {#await collections then colls}
         <h2>Collection wählen:</h2>
         <select name="collection" size="{colls.length}" bind:value={selectedCol}>
@@ -185,7 +185,7 @@
         </select>
     {/if}
     {#if selectedDoc}
-        {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments"/>{/if}
+        {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments" class="col-span-full max-w-full"/>{/if}
         <Button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</Button>
         <Button on:click={() => startHTR(selectedDoc.docId)}>start HTR</Button>
         Status: {statusLA}
@@ -218,15 +218,3 @@
         </div>
     {/await}
 </div>
-
-<style>
-    .container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
-
-    img {
-        max-width: 100%;
-        grid-column: 1 / -1;
-    }
-</style>

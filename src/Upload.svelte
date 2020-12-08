@@ -58,15 +58,3 @@
         <button on:click={startUpload}>upload file(s)</button>
     {/if}
 </div>
-
-<style>
-    .container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
-
-    img {
-        max-width: 100%;
-        grid-column: 1 / -1;
-    }
-</style>

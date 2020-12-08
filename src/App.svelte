@@ -68,7 +68,7 @@
 	<script src="https://account.readcoop.eu/auth/js/keycloak.js" on:load={initKeycloak}></script>
 </svelte:head>
 
-<main>
+<main class="text-center p-4 container mx-auto">
 	<h1>HTR-Frontend</h1>
 	<!-- <button on:click={testrequest}>testrequest</button>-->
 	{#if !$authenticated}
@@ -92,19 +92,3 @@
 		{/if}
 	{/if}
 </main>
-
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style>
