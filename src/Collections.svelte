@@ -3,9 +3,9 @@
     import {onMount} from 'svelte';
     import "smelte/src/tailwind.css" ;
     import Button from "smelte/src/components/Button";
+    import Select from "smelte/src/components/Select";
 
-    let collections = new Promise(() => {
-    });
+    let collections = [];
     let selectedCol;
     let selectedDoc;
     let docs;
@@ -28,7 +28,9 @@
         let data;
         if (response.status === 200) {
             console.log('status was 200, no need to refresh the session');
-            collections = await response.json();
+            for (let item of await response.json()){
+                collections = [...collections, {value: item, text: item.colName}];
+            }
         } else {
             console.log('session needs to be refreshed!')
             //fetch(`auth.json`).then(res => res.json()).then(json => sessionId.set(json.sessionId));
@@ -38,33 +40,41 @@
                     'Authorization': 'Bearer ' + keycloak.token
                 }
             });
-            const collections = await response.json();
+            for (let item of await response.json()){
+                collections = [...collections, {value: item, text: item.colName}];
+            }
+
         }
         const interval = setInterval(async () => {
             checkJobs().then(res => jobs = res);
             console.log('jobs:')
             console.log(await jobs)
-            await jobs.forEach((job) => {
-                if (job.docId === selectedDoc.docId && job.state !== "FINISHED") {
-                    console.log("selected doc is processing");
-                    reloadJob = job.jobId;
-                } else if (job.jobId === reloadJob && job.state === "FINISHED") {
-                    console.log("reloading xml!");
-                    getDocXml(selectedDoc.docId, 1).then(res => docXML = res);
-                    reloadJob = null;
-                }
-            });
+            if (selectedDoc) {
+                await jobs.forEach((job) => {
+                    if (job.docId === selectedDoc.docId && job.state !== "FINISHED") {
+                        console.log("selected doc is processing");
+                        reloadJob = job.jobId;
+                    } else if (job.jobId === reloadJob && job.state === "FINISHED") {
+                        console.log("reloading xml!");
+                        getDocXml(selectedDoc.docId, 1).then(res => docXML = res);
+                        reloadJob = null;
+                    }
+                });
+            }
         }, 5000);
     });
     const fetchDocs = async (id) => {
         console.log('running fetchDocs')
+        let data = [];
         const res = await fetch(`${URL}/rest/collections/${id}/list`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token
             }
         });
-        const data = await res.json();
+        for (let item of await res.json()){
+           data = [...data, {value: item, text: item.title}]
+        }
         console.log(data);
         return data;
     }
@@ -168,21 +178,13 @@
     }
 </script>
 <div className="container grid grid-cols-2">
-    {#await collections then colls}
+    {#if collections.length}
         <h2>Collection wählen:</h2>
-        <select name="collection" size="{colls.length}" bind:value={selectedCol}>
-            {#each colls as collection}
-                <option value={collection}>{collection.colName}</option>
-            {/each}
-        </select>
-    {/await}
+        <Select label="collection" items={collections} bind:value={selectedCol}/>
+    {/if}
     {#if docs}
         <h2>Dokument wählen:</h2>
-        <select name="document" size="{docs.length}" bind:value={selectedDoc}>
-            {#each docs as doc}
-                <option value={doc}>{doc.title}</option>
-            {/each}
-        </select>
+        <Select label="document" items={docs} bind:value={selectedDoc}/>
     {/if}
     {#if selectedDoc}
         {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments" class="col-span-full max-w-full"/>{/if}
