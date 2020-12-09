@@ -187,13 +187,13 @@
         <Select label="document" items={docs} bind:value={selectedDoc}/>
     {/if}
     {#if selectedDoc}
-        {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments" class="col-span-full max-w-full"/>{/if}
+        {#if fullDoc}<img src="{fullDoc.md.url}" alt="bild des dokuments" class="col-span-full max-w-full mx-auto mb-4" style="max-height: 800px;"/>{/if}
         <Button on:click="{() => startLA(selectedDoc.docId)}">start Layout analysis</Button>
         <Button on:click={() => startHTR(selectedDoc.docId)}>start HTR</Button>
         Status: {statusLA}
     {/if}
     {#await docXML then data}
-        <div class="download">
+        <div class="download py-4">
             <p>Download XML:</p>
             {#if fullDoc}
                 {#each fullDoc.pageList.pages as page, i}
@@ -206,7 +206,7 @@
     {/await}
 
     {#await jobs then jobList}
-        <div class="joblist">
+        <div class="joblist py-4">
             <h2>Jobs</h2>
             <ul>
                 {#each jobList as job}
