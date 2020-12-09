@@ -1,4 +1,5 @@
 <script>
+    import "smelte/src/tailwind.css" ;
     import Button from "smelte/src/components/Button";
     import TextField from "smelte/src/components/TextField";
     import {URL} from './_store';
@@ -45,8 +46,8 @@
         console.log(data);
     }
 </script>
-<div className="container">
-    Uploading file into {collection.name}.
+<div className="container w-full" style="width: 100%">
+    <h2>Uploading file into {collection.name}.</h2>
     <TextField bind:value={meta.md.title} />
     <TextField bind:value={meta.md.author}/>
     <TextField bind:value={meta.md.genre}/>

@@ -177,13 +177,13 @@
         getDocXml(selectedDoc.docId, 1).then(res => docXML = res);
     }
 </script>
-<div className="container grid grid-cols-2">
+<div className="container grid grid-cols-2 w-full" style="width: 100%">
     {#if collections.length}
-        <h2>Collection wählen:</h2>
+        <h2>Choose Collection:</h2>
         <Select label="collection" items={collections} bind:value={selectedCol}/>
     {/if}
     {#if docs}
-        <h2>Dokument wählen:</h2>
+        <h2>Choose Document:</h2>
         <Select label="document" items={docs} bind:value={selectedDoc}/>
     {/if}
     {#if selectedDoc}
@@ -200,6 +200,9 @@
                     {#await getDocXml(selectedDoc.docId, i + 1) then link}
                         <a href="{link}">Seite {i + 1}</a>
                     {/await}
+                    {#if fullDoc.pageList.pages.length > i+1}
+                        {@html " - "}
+                    {/if}
                 {/each}
             {/if}
         </div>
