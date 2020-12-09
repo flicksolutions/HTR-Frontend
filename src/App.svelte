@@ -3,6 +3,8 @@
 	import Button from "smelte/src/components/Button";
 	import TextField from "smelte/src/components/TextField";
 	import Switch from "smelte/src/components/Switch";
+	import Tabs from "smelte/src/components/Tabs";
+	import { Tab } from "smelte";
 	import { onMount } from 'svelte';
 	import { token, authenticated } from './_store';
 	import Collections from './Collections.svelte';
@@ -58,7 +60,7 @@
 		console.log("json() consumed:")
 		console.log(collections)
 	}
-
+let loading = false;
 
 </script>
 <svelte:head>
@@ -75,12 +77,27 @@
 		<p>Please log in at Transkribus </p>
 		<Button on:click={auth}>Log In</Button>
 	{:else}
-		{#if !action}
-			<p>Would you like to upload files or process files already on the server?</p>
-			<p><Button on:click={() => {action = Upload}}>upload!</Button> <Button on:click={() => {action = Collections}}>process!</Button></p>
-		{:else}
-			<svelte:component this={action} { keycloak } />
-		{/if}
+		<Tabs
+				class="bg-primary-700 elevation-10 mt-6 text-white rounded-t-lg"
+				let:selected={selected}
+				{loading}
+				items={[
+      { id: "1", text: 'upload'},
+      { id: "2", text: 'process'},
+    ]}>
+			<div
+					slot="content"
+					class="flex items-center content-center w-full h-full"
+			>
+				<Tab id="1" {selected}>
+					<Upload { keycloak } />
+				</Tab>
+				<Tab id="2" {selected}>
+					<Collections { keycloak } />
+				</Tab>
+			</div>
+		</Tabs>
+
 		<p class="mt-5"><Switch bind:value={devMode}/> dev Mode</p>
 		{#if devMode}
 			<div transition:fly={{y:200, duration:1000}}>
