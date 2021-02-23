@@ -15,7 +15,7 @@
 	let action;
 	let Keycloak;
 	let keycloak = {};
-	let customUrl = 'https://transkribus.eu/TrpServerTesting/rest/collections/list';
+	let customUrl = 'https://transkribus.eu/TrpServer/rest/collections/list';
 	let devMode = false;
 
 	const initKeycloak = () => {
@@ -101,8 +101,8 @@ let loading = false;
 		<p class="mt-5"><Switch bind:value={devMode}/> dev Mode</p>
 		{#if devMode}
 			<div transition:fly={{y:200, duration:1000}}>
-				<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/list')}>testfetch collections/list</Button>
-				<Button on:click={() => testfetch('https://transkribus.eu/TrpServerTesting/rest/collections/76206/list')}>testfetch collections/76206/list</Button>
+				<Button on:click={() => testfetch('https://transkribus.eu/TrpServer/rest/collections/list')}>testfetch collections/list</Button>
+				<Button on:click={() => testfetch('https://transkribus.eu/TrpServer/rest/collections/76206/list')}>testfetch collections/76206/list</Button>
 				<TextField label="custom URL" bind:value={customUrl} />
 				<Button on:click={() => testfetch(customUrl)}>fetch custom URL</Button>
 			</div>
