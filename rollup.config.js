@@ -15,50 +15,27 @@ function serve() {
 		if (server) server.kill(0);
 	}
 
+	return {
+		writeBundle() {
+			if (server) return;
+			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
+				stdio: ['ignore', 'inherit', 'inherit'],
+				shell: true
+			});
+
+			process.on('SIGTERM', toExit);
+			process.on('exit', toExit);
+		}
+	};
+}
+
 export default {
-	client: {
-		input: config.client.input(),
-		output: config.client.output(),
-		plugins: [
-			replace({
-				'process.browser': true,
-				'process.env.NODE_ENV': JSON.stringify(mode)
-			}),
-			svelte({
-				dev,
-				hydratable: true,
-				emitCss: true
-			}),
-			resolve({
-				browser: true,
-				dedupe: ['svelte']
-			}),
-			commonjs(),
-
-			legacy && babel({
-				extensions: ['.js', '.mjs', '.html', '.svelte'],
-				babelHelpers: 'runtime',
-				exclude: ['node_modules/@babel/**'],
-				presets: [
-					['@babel/preset-env', {
-						targets: '> 0.25%, not dead'
-					}]
-				],
-				plugins: [
-					'@babel/plugin-syntax-dynamic-import',
-					['@babel/plugin-transform-runtime', {
-						useESModules: true
-					}]
-				]
-			}),
-
-			!dev && terser({
-				module: true
-			})
-		],
-
-		preserveEntrySignatures: false,
-		onwarn,
+	input: 'src/main.js',
+	output: {
+		sourcemap: true,
+		format: 'iife',
+		name: 'app',
+		file: 'public/build/bundle.js'
 	},
 	plugins: [
 		svelte({
@@ -91,44 +68,30 @@ export default {
 		// a separate file - better for performance
 		//css({ output: 'bundle.css' }),
 
-	server: {
-		input: config.server.input(),
-		output: config.server.output(),
-		plugins: [
-			replace({
-				'process.browser': false,
-				'process.env.NODE_ENV': JSON.stringify(mode)
-			}),
-			svelte({
-				generate: 'ssr',
-				hydratable: true,
-				dev
-			}),
-			resolve({
-				dedupe: ['svelte']
-			}),
-			commonjs()
-		],
-		external: Object.keys(pkg.dependencies).concat(require('module').builtinModules),
+		// If you have external dependencies installed from
+		// npm, you'll most likely need these plugins. In
+		// some cases you'll need additional configuration -
+		// consult the documentation for details:
+		// https://github.com/rollup/plugins/tree/master/packages/commonjs
+		resolve({
+			browser: true,
+			dedupe: ['svelte']
+		}),
+		commonjs(),
 
-		preserveEntrySignatures: 'strict',
-		onwarn,
-	},
+		// In dev mode, call `npm run start` once
+		// the bundle has been generated
+		!production && serve(),
 
-	serviceworker: {
-		input: config.serviceworker.input(),
-		output: config.serviceworker.output(),
-		plugins: [
-			resolve(),
-			replace({
-				'process.browser': true,
-				'process.env.NODE_ENV': JSON.stringify(mode)
-			}),
-			commonjs(),
-			!dev && terser()
-		],
+		// Watch the `public` directory and refresh the
+		// browser on changes when not in production
+		!production && livereload('public'),
 
-		preserveEntrySignatures: false,
-		onwarn,
+		// If we're building for production (npm run build
+		// instead of npm run dev), minify
+		production && terser()
+	],
+	watch: {
+		clearScreen: false
 	}
 };
